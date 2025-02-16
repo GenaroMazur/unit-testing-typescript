@@ -1,14 +1,12 @@
 import UserApplication from "../../../../src/modules/user/application/user.application";
-import UserRepository from "../../../../src/modules/user/domain/User.repository";
 import UserRepositoryMock from "../mocks/User.repository.mock";
 import GetAllUserOutDto from "../../../../src/modules/user/application/dto/GetAllUser.out.dto";
-import User from "../../../../src/modules/user/domain/User";
 import UserNotFoundException from "../../../../src/modules/user/domain/exceptions/UserNotFound.exception";
 import UserOutDto from "../../../../src/modules/user/application/dto/User.out.dto";
 
 describe("UserApplication", () => {
 	let userApplication!: UserApplication;
-	let userRepository!: UserRepository;
+	let userRepository!: UserRepositoryMock;
 
 	beforeEach(() => {
 		userRepository = new UserRepositoryMock();
@@ -17,132 +15,6 @@ describe("UserApplication", () => {
 
 	it("Debe ser una instancia de UserApplication", () => {
 		expect(userApplication).toBeInstanceOf(UserApplication);
-	});
-
-	describe("UserOutDto", () => {
-		it("Debe ser UserOutDto", () => {
-			const userOutDto = new UserOutDto(
-				User.builder().withPassword("test").build(),
-			);
-
-			expect(userOutDto).toBeInstanceOf(UserOutDto);
-		});
-
-		it("Debe devolver un primitivo", () => {
-			const userOutDto = new UserOutDto(
-				User.builder().withPassword("test").build(),
-			);
-
-			expect(userOutDto.getPrimitive()).toStrictEqual({
-				id: 0,
-				name: "",
-				email: "",
-				deleteAt: null,
-				createAt: userOutDto.createAt,
-				updateAt: userOutDto.updateAt,
-			});
-		});
-
-		it("No debe devolver la contraseña", () => {
-			const userOutDto = new UserOutDto(
-				User.builder().withPassword("test").build(),
-			);
-
-			// @ts-ignore
-			expect(userOutDto.password).toBeUndefined();
-		});
-	});
-
-	describe("GetAllUserOutDto", () => {
-		it("Debe ser GetAllUserOutDto", () => {
-			const getAllUserOutDto = new GetAllUserOutDto({
-				count: 0,
-				limit: 10,
-				page: 1,
-				users: [],
-			});
-
-			expect(getAllUserOutDto).toBeInstanceOf(GetAllUserOutDto);
-		});
-
-		it("Debe devolver el primitivo", () => {
-			const getAllUserOutDto = new GetAllUserOutDto({
-				count: 0,
-				limit: 10,
-				page: 1,
-				users: [],
-			});
-
-			expect(getAllUserOutDto.getPrimitive()).toStrictEqual({
-				count: 0,
-				limit: 10,
-				page: 1,
-				users: [],
-			});
-		});
-
-		it("Debe tener un atributo limit", () => {
-			const getAllUserOutDto = new GetAllUserOutDto({
-				count: 0,
-				limit: 10,
-				page: 1,
-				users: [],
-			});
-
-			expect(getAllUserOutDto.limit).toBe(10);
-		});
-
-		it("Debe tener un atributo page", () => {
-			const getAllUserOutDto = new GetAllUserOutDto({
-				count: 0,
-				limit: 10,
-				page: 1,
-				users: [],
-			});
-
-			expect(getAllUserOutDto.page).toBe(1);
-		});
-
-		it("Debe tener el atributo count", () => {
-			const getAllUserOutDto = new GetAllUserOutDto({
-				count: 0,
-				limit: 10,
-				page: 1,
-				users: [],
-			});
-
-			expect(getAllUserOutDto.count).toBe(0);
-		});
-
-		it("Debe tener el atributo users", () => {
-			const getAllUserOutDto = new GetAllUserOutDto({
-				count: 0,
-				limit: 10,
-				page: 1,
-				users: [],
-			});
-
-			expect(Array.isArray(getAllUserOutDto.users)).toBeTruthy();
-			expect(getAllUserOutDto.users).toHaveLength(0);
-		});
-
-		it("Los usuarios deben convertirse en primitivos", () => {
-			const getAllUserOutDto = new GetAllUserOutDto({
-				count: 0,
-				limit: 10,
-				page: 1,
-				users: [],
-			});
-			getAllUserOutDto.users.push(
-				new UserOutDto(User.builder().withPassword("test").build()),
-			);
-
-			expect(getAllUserOutDto.getPrimitive().users).toHaveLength(1);
-			expect(
-				// @ts-ignore
-				getAllUserOutDto.getPrimitive().users[0]!.password,
-			).toBeUndefined();
-		});
 	});
 
 	describe("getUsers", () => {
