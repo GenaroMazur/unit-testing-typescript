@@ -4,6 +4,10 @@ export default class User {
 	email: string;
 	password: string;
 
+	deleteAt: Date | null = null;
+	createAt: Date = new Date();
+	updateAt: Date = new Date();
+
 	static builder(): UserBuilder {
 		return new UserBuilder();
 	}

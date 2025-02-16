@@ -17,6 +17,9 @@ describe("User Entity", () => {
 			expect(user.name).toBe(name);
 			expect(user.email).toBe(email);
 			expect(user.password).toBe(password);
+			expect(user.deleteAt).toBeNull();
+			expect(user.createAt).toBeInstanceOf(Date);
+			expect(user.updateAt).toBeInstanceOf(Date);
 		});
 
 		it("Sin argumentos", () => {
@@ -28,6 +31,9 @@ describe("User Entity", () => {
 			expect(user.name).toBeUndefined();
 			expect(user.email).toBeUndefined();
 			expect(user.password).toBeUndefined();
+			expect(user.deleteAt).toBeNull();
+			expect(user.createAt).toBeInstanceOf(Date);
+			expect(user.updateAt).toBeInstanceOf(Date);
 		});
 	});
 
@@ -52,6 +58,9 @@ describe("User Entity", () => {
 			expect(user.name).toBe(name);
 			expect(user.email).toBe(email);
 			expect(user.password).toBe(password);
+			expect(user.deleteAt).toBeNull();
+			expect(user.createAt).toBeInstanceOf(Date);
+			expect(user.updateAt).toBeInstanceOf(Date);
 		});
 
 		it("Sin argumentos", () => {
@@ -63,6 +72,9 @@ describe("User Entity", () => {
 			expect(user.name).toBe("");
 			expect(user.email).toBe("");
 			expect(user.password).toBe("");
+			expect(user.deleteAt).toBeNull();
+			expect(user.createAt).toBeInstanceOf(Date);
+			expect(user.updateAt).toBeInstanceOf(Date);
 		});
 	});
 });
