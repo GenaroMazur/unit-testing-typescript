@@ -2,6 +2,7 @@ import UserRepository from "../domain/User.repository";
 import { PaginationInterface } from "../../../interfaces/Pagination.interface";
 import GetAllUserOutDto from "./dto/GetAllUser.out.dto";
 import UserNotFoundException from "../domain/exceptions/UserNotFound.exception";
+import UserOutDto from "./dto/User.out.dto";
 
 export default class UserApplication {
 	constructor(private readonly userRepository: UserRepository) {}
@@ -15,7 +16,7 @@ export default class UserApplication {
 		const count = await this.userRepository.count();
 
 		return new GetAllUserOutDto({
-			users,
+			users: users.map((u) => new UserOutDto(u)),
 			count,
 			...options.pagination,
 		});
@@ -26,6 +27,6 @@ export default class UserApplication {
 
 		if (!user) throw new UserNotFoundException(`${id}`);
 
-		return user;
+		return new UserOutDto(user);
 	}
 }

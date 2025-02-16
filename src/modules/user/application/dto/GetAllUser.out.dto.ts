@@ -1,10 +1,10 @@
-import User from "../../domain/User";
+import UserOutDto from "./User.out.dto";
 
 export interface GetAllUserOutPrimitive {
 	page: number;
 	limit: number;
 	count: number;
-	users: User[];
+	users: UserOutDto[];
 }
 
 export default class GetAllUserOutDto {
@@ -27,6 +27,9 @@ export default class GetAllUserOutDto {
 	}
 
 	getPrimitive() {
-		return { ...this.getAllUserOutDto };
+		return {
+			...this.getAllUserOutDto,
+			users: this.getAllUserOutDto.users.map((user) => user.getPrimitive()),
+		};
 	}
 }
