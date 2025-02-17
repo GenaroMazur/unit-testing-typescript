@@ -29,7 +29,9 @@ export default class UserRepositoryMock extends UserRepository {
 	): Promise<User | null> {
 		return Promise.resolve(
 			this.users.find((u) => {
-				if (option.where) return u.id === option.where.id;
+				if (option.where?.id) return u.id === option.where.id;
+				if (option.where?.email) return u.email === option.where.email;
+				if (option.where?.name) return u.name === option.where.name;
 				else return false;
 			}) || null,
 		);

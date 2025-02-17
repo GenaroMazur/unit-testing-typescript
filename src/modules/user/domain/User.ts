@@ -13,9 +13,8 @@ export default class User {
 	}
 
 	constructor();
-	constructor(id: number, name: string, email: string, password: string);
-	constructor(id?: number, name?: string, email?: string, password?: string) {
-		if (typeof id !== "undefined") this.id = id;
+	constructor(name: string, email: string, password: string);
+	constructor(name?: string, email?: string, password?: string) {
 		if (typeof name !== "undefined") this.name = name;
 		if (typeof email !== "undefined") this.email = email;
 		if (typeof password !== "undefined") this.password = password;
@@ -26,7 +25,7 @@ class UserBuilder {
 	private readonly user: User;
 
 	constructor() {
-		this.user = new User(0, "", "", "");
+		this.user = new User("", "", "");
 	}
 
 	withId(id: number): UserBuilder {

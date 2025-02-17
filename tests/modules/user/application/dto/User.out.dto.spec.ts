@@ -3,9 +3,10 @@ import User from "../../../../../src/modules/user/domain/User";
 
 describe("UserOutDto", () => {
 	it("Debe ser UserOutDto", () => {
-		const userOutDto = new UserOutDto(
-			User.builder().withPassword("test").build(),
-		);
+		const user = User.builder().withPassword("test").build();
+		user.id = 0;
+
+		const userOutDto = new UserOutDto(user);
 
 		expect(userOutDto).toBeInstanceOf(UserOutDto);
 		expect(userOutDto.createAt).toBeInstanceOf(Date);
@@ -17,9 +18,10 @@ describe("UserOutDto", () => {
 	});
 
 	it("Debe devolver un primitivo", () => {
-		const userOutDto = new UserOutDto(
-			User.builder().withPassword("test").build(),
-		);
+		const user = User.builder().withPassword("test").build();
+		user.id = 0;
+
+		const userOutDto = new UserOutDto(user);
 
 		expect(userOutDto.getPrimitive()).toStrictEqual({
 			id: 0,

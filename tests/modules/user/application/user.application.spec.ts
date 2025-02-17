@@ -3,14 +3,22 @@ import UserRepositoryMock from "../mocks/User.repository.mock";
 import GetAllUserOutDto from "../../../../src/modules/user/application/dto/GetAllUser.out.dto";
 import UserNotFoundException from "../../../../src/modules/user/domain/exceptions/UserNotFound.exception";
 import UserOutDto from "../../../../src/modules/user/application/dto/User.out.dto";
+import CreateUserInDto from "../../../../src/modules/user/application/dto/CreateUser.in.dto";
+import UserAlreadyExistException from "../../../../src/modules/user/domain/exceptions/UserAlreadyExist.exception";
+import BcryptEncoderApplicationMock from "../mocks/BcryptEncoder.application.mock";
 
 describe("UserApplication", () => {
 	let userApplication!: UserApplication;
 	let userRepository!: UserRepositoryMock;
+	let bcryptEncoderApplicationMock!: BcryptEncoderApplicationMock;
 
 	beforeEach(() => {
 		userRepository = new UserRepositoryMock();
-		userApplication = new UserApplication(userRepository);
+		bcryptEncoderApplicationMock = new BcryptEncoderApplicationMock();
+		userApplication = new UserApplication(
+			userRepository,
+			bcryptEncoderApplicationMock,
+		);
 	});
 
 	it("Debe ser una instancia de UserApplication", () => {
@@ -64,4 +72,68 @@ describe("UserApplication", () => {
 			expect(user).toBeInstanceOf(UserOutDto);
 		});
 	});
+
+	describe("createUser", () => {
+		it("Debe tener el metodo createUser", () => {
+			expect(userApplication.createUser).toBeDefined();
+		});
+
+		it("Debe recibir un CreateUserDto y devolver un UserDto", async () => {
+			const user = await userApplication.createUser(
+				new CreateUserInDto({ email: "", name: "", password: "" }),
+			);
+
+			expect(user).toBeDefined();
+			expect(user).toBeInstanceOf(UserOutDto);
+		});
+
+		it("Se debe guardar en base de datos", async () => {
+			await userApplication.createUser(
+				new CreateUserInDto({ email: "", name: "", password: "" }),
+			);
+
+			expect(userRepository.users).toHaveLength(3);
+		});
+
+		it("Debe retornar error UserAlreadyExist", async () => {
+			try {
+				const createUserInDto = new CreateUserInDto({
+					email: "genaro@gmail.com",
+					name: "genaro",
+					password: "123",
+				});
+
+				await userApplication.createUser(createUserInDto);
+				await userApplication.createUser(createUserInDto);
+
+				throw new Error("No se lanzó la excepción");
+			} catch (e) {
+				if (!(e instanceof Error)) throw e;
+
+				expect(e).toBeDefined();
+				expect(e).toBeInstanceOf(UserAlreadyExistException);
+			}
+		});
+
+		it("Debe encriptar la contraseña al guardar", async () => {
+			const createUserInDto = new CreateUserInDto({
+				email: "genaro@gmail.com",
+				name: "genaro",
+				password: "123",
+			});
+
+			await userApplication.createUser(createUserInDto);
+
+			const user = userRepository.users.find(
+				(u) => u.email === createUserInDto.email,
+			);
+
+			expect(user).toBeDefined();
+			expect(user?.password).not.toBe(createUserInDto.password);
+		});
+	});
+
+	//TODO: Implementar test para el método updateUser
+
+	//TODO: Implementar test para el método deleteUser
 });
